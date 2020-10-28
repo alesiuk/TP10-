@@ -147,7 +147,79 @@ int main(int argc, char** argv) {
     
     
     
-        porst_t port;
+    /*BIENVENIDA POR BITMAP Y POR CONSOLA*/
+    
+    bienvenida();
+    al_play_sample(music, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);//Doy la bienvenida al usuario
+    al_draw_scaled_bitmap(bienvenida,0, 0, al_get_bitmap_width(bienvenida), al_get_bitmap_height(bienvenida),0, 0, LARGO, ANCHO,0);
+    al_flip_display();                                                  //Muestro la imagen de bienvenida
+    BOOLEAN enter = FALSE;                                              //Ver si se presiono enter
+    while (enter == FALSE){                                             //Me quedo aca hasta que se apriete enter o se cierre el programa
+        ALLEGRO_EVENT ev0;            //Struct toma todos los eventos de la cola
+        if (al_get_next_event(event_queue, &ev0)){                   //Damos entrada de teclado por allegro
+            if (ev0.type == ALLEGRO_EVENT_DISPLAY_CLOSE){            //Si se quiso cerrar el display
+                al_destroy_bitmap(imagen);       //se libera la memoria dinamica , destruyendo los elemntos usados
+                al_destroy_bitmap(led);
+                al_destroy_bitmap(led_low);
+                al_destroy_bitmap(bienvenida);
+                al_destroy_display(display);
+                al_destroy_event_queue(event_queue);
+                al_destroy_bitmap(menu);
+                al_uninstall_audio();
+                al_destroy_sample(music);
+                return 0;
+            }
+            else if ((ev0.type == ALLEGRO_EVENT_KEY_DOWN) && (ev0.keyboard.keycode == ALLEGRO_KEY_ENTER)){
+                enter = TRUE;
+            }
+        }
+    }
+    al_draw_scaled_bitmap(menu,0, 0, al_get_bitmap_width(menu), al_get_bitmap_height(menu),0, 0, LARGO, ANCHO,0);
+    al_flip_display();                                                  //Muestro la imagen de bienvenida
+    enter = FALSE;                                              //Ver si se presiono enter
+    while (enter == FALSE){                                             //Me quedo aca hasta que se apriete enter o se cierre el programa
+        ALLEGRO_EVENT ev1;            //Struct toma todos los eventos de la cola
+        if (al_get_next_event(event_queue, &ev1)){                   //Damos entrada de teclado por allegro
+            if (ev1.type == ALLEGRO_EVENT_DISPLAY_CLOSE){            //Si se quiso cerrar el display
+                al_destroy_bitmap(imagen);       //se libera la memoria dinamica , destruyendo los elemntos usados
+                al_destroy_bitmap(led);
+                al_destroy_bitmap(led_low);
+                al_destroy_bitmap(bienvenida);
+                al_destroy_display(display);
+                al_destroy_event_queue(event_queue);
+                al_destroy_bitmap(menu);
+                al_uninstall_audio();
+                al_destroy_sample(music);
+                return 0;
+            }
+            else if ((ev1.type == ALLEGRO_EVENT_KEY_DOWN) && (ev1.keyboard.keycode == ALLEGRO_KEY_ENTER)){
+                enter = TRUE;
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        
     
 	int mientras=1;							//inicializo variable que utilizo para un while
 

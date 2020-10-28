@@ -8,6 +8,7 @@
 
 static porst_t p;
 static void w_port (uint16_t estado);
+porst_t port;
 
 /*W_port*/
 
