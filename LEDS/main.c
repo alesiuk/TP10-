@@ -26,8 +26,6 @@ Usando la libreria hecha en el ejercicio 4 podemos jugar con el puerto A prendie
 #include "mechanic.h"
 #include "ports.h"
 
-void bienvenida();                      //funcion que le da la bienvenida al usuario
-
 /*
  * 
  */
@@ -180,14 +178,3 @@ int main(int argc, char** argv) {
     return (EXIT_SUCCESS);
 }
 
-void bienvenida ()					//funcion que le da la bienvenida al usuario
-{
-    printf("Bienvenidos al TP 10 del grupo 5 \n");
-    printf("Este programa es un simulador de 8 LEDs conectados al puerto A, cada LED representa un bit del puerto.\n");
-    printf("Este programa permite modificar cada LED del puerto mediante las siguientes instrucciones:\n");
-    printf(" Para prender un LED especifico presione un numero del 0 al 7.\n");
-    printf(" Para cambiar todos los LEDs al estado opuesto presione la tecla 't'.\n");
-    printf(" Para apagar todos los leds presione la tecla 'c'.\n");
-    printf(" Para prender todos los leds presione la tecla 's'.\n");
-    printf(" Para finalizar el programa presione la tecla 'q'.\n");
-}

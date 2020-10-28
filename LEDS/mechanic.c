@@ -68,3 +68,16 @@ void sw (char insta)			//Esta funicon recibe que boton se apreto y no devuelve n
 	}
 	return;
 }
+
+
+void bienvenida ()					//funcion que le da la bienvenida al usuario
+{
+    printf("Bienvenidos al TP 10 del grupo 5 \n");
+    printf("Este programa es un simulador de 8 LEDs conectados al puerto A, cada LED representa un bit del puerto.\n");
+    printf("Este programa permite modificar cada LED del puerto mediante las siguientes instrucciones:\n");
+    printf(" Para prender un LED especifico presione un numero del 0 al 7.\n");
+    printf(" Para cambiar todos los LEDs al estado opuesto presione la tecla 't'.\n");
+    printf(" Para apagar todos los leds presione la tecla 'c'.\n");
+    printf(" Para prender todos los leds presione la tecla 's'.\n");
+    printf(" Para finalizar el programa presione la tecla 'q'.\n");
+}
