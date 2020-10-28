@@ -30,12 +30,12 @@ Usando la libreria hecha en el ejercicio 4 podemos jugar con el puerto A prendie
 #include <allegro5/allegro_acodec.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
 
 
-#define LARGO 523
-#define ANCHO 600
+#define LARGO 1280
+#define ANCHO 411
 #define BLINK_TIMES 2
 
-static void map_portA (ALLEGRO_BITMAP *, ALLEGRO_BITMAP *);      //transfiere datos del portA al display que se muestra usando allegro. Recibe las imagenes
-static void Blink (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned char);                            //Hace parpadear los bit prendidos. Devuelve el seteo original
+static void map_portA (ALLEGRO_BITMAP *, ALLEGRO_BITMAP *,unsigned char);      //transfiere datos del portA al display que se muestra usando allegro. Recibe las imagenes
+static void Blink (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low);                            //Hace parpadear los bit prendidos. Devuelve el seteo original
 /*
  * 
  */
@@ -126,7 +126,7 @@ int main(void) {
         return -1;                                                                                                                          //
     }                                                                                                                                       //
                                                                                                                                             //
-    music = al_load_sample("kun.wap");                                                                                                      //
+    music = al_load_sample("audio.wav");                                                                                                      //
                                                                                                                                             //
     if (!music) {                                                                                                                           //
         printf("Audio clip sample not loaded!\n");                                                                                          //
@@ -165,7 +165,7 @@ int main(void) {
     /////////////////////////////////////////
     /*BIENVENIDA POR BITMAP Y POR CONSOLA*///
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    bienvenida();                                                                                                                                                        //
+    bienvenida1();                                                                                                                                                        //
     al_play_sample(music, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);              //Damos bienvenida al usuario                                                        //
     al_draw_scaled_bitmap(bienvenida,0, 0, al_get_bitmap_width(bienvenida), al_get_bitmap_height(bienvenida),0, 0, LARGO, ANCHO,0);                                      //
     al_flip_display();                                                      //Muestro la imagen de bienvenida                                                            //
@@ -338,25 +338,10 @@ int main(void) {
     return (EXIT_SUCCESS);
 
 }
- 
- /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-static void Blink(ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low){         //devuelve la configuracioin inicial de los bits       //
-    unsigned char port_temp= r_portA();                     //salva la configuracion inicial                                    //
-    int fin;                                                                                                                    //
-    for(fin=0;fin<=(BLINK_TIMES+1);fin++){                                                                                      //
-        print_portA(0);                                     //lo imprimo                                                        //
-        map_portA(led_high, led_low, port_temp);                      //lo imprimo en bitmap                                    //
-        sleep(1);                                          //delay                                                              //
-                                                                                                                                //
-    }                                                                                                                           //
-    printf ("Blink finalizado\n");                         //indico que termino el blink                                        //
-    return;                                                                                                                     //
-}                                                                                                                               //
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned char a){        
+}
+    static void map_portA (ALLEGRO_BITMAP *led_high, ALLEGRO_BITMAP *led_low,unsigned char a){        
        if (a==0){                                
-                if(p.puertAB.PortA.bits.b7==1)            
+                if((rpuerto(7))==1)            
                 {
                         al_draw_bitmap(led_high,378,56,0);       //se carga una imagen de un led encendido
                 }
@@ -364,7 +349,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,378,56,0);      //se carga una imagen de un led apagado
                 }    
-                if(p.puertAB.PortA.bits.b6==1)
+                if((rpuerto(6))==1)
                 {
                         al_draw_bitmap(led_high,473,56,0);
                 }
@@ -372,7 +357,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,473,56,0);
                 }    
-                if(p.puertAB.PortA.bits.b5==1)
+                if((rpuerto(5))==1)
                 {
                         al_draw_bitmap(led_high ,568,56,0);
                 }
@@ -380,7 +365,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,568,56,0);
                 }    
-                if(p.puertAB.PortA.bits.b4==1)
+                if((rpuerto(4))==1)
                 {
                         al_draw_bitmap(led_high ,664,56,0);
                 }
@@ -388,7 +373,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,664,56,0);
                 }    
-                if(p.puertAB.PortA.bits.b3==1)
+                if((rpuerto(3))==1)
                 {
                         al_draw_bitmap(led_high ,759,56,0);
                 }
@@ -396,7 +381,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,759,56,0);
                 }    
-                if(p.puertAB.PortA.bits.b2==1)
+                if((rpuerto(2))==1)
                 {
                         al_draw_bitmap(led_high ,855,56,0);
                 }   
@@ -404,7 +389,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,855,56,0);
                 }    
-                if(p.puertAB.PortA.bits.b1==1)
+                if((rpuerto(1))==1)
                 {
 
                         al_draw_bitmap(led_high ,950,56,0);
@@ -413,7 +398,7 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
                 {
                         al_draw_bitmap(led_low,950,56,0);
                 }    
-                if(p.puertAB.PortA.bits.b0==1)
+                if((rpuerto(0))==1)
                 {
                         al_draw_bitmap(led_high ,1034,56,0);
                 }
@@ -433,6 +418,24 @@ static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned ch
             al_draw_bitmap(led_low,855,56,0);
             al_draw_bitmap(led_low,950,56,0);
             al_draw_bitmap(led_low,1034,56,0);
-             
+             al_flip_display();
         }
+        
 }
+ 
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+static void Blink(ALLEGRO_BITMAP *led_high, ALLEGRO_BITMAP *led_low){         //devuelve la configuracioin inicial de los bits       //
+    unsigned char port_temp= r_portA();                     //salva la configuracion inicial                                    //
+    int fin;                                                                                                                    //
+    for(fin=0;fin<=(BLINK_TIMES+1);fin++){                                                                                      //
+        print_portA(0);                                     //lo imprimo                                                        //
+        map_portA(led_high, led_low, 1);                      //lo imprimo en bitmap                                    //
+        sleep(1);                                          //delay                                                              //
+        print_portA(port_temp);                                     //lo imprimo                                                        //
+        map_portA(led_high, led_low, 0);                      //lo imprimo en bitmap                                    //
+        sleep(1);                                                                                                                               //
+    }                                                                                                                           //
+    printf ("Blink finalizado\n");                         //indico que termino el blink                                        //                                                                                                                    //
+}                                                                                                                               //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
