@@ -22,14 +22,24 @@ Usando la libreria hecha en el ejercicio 4 podemos jugar con el puerto A prendie
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "input.h"
 #include "mechanic.h"
 #include "ports.h"
+#include <allegro5/allegro5.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_audio.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
+#include <allegro5/allegro_acodec.h> // NO OLVIDAR AGREGAR EN EL LINKER DEL PROYECTO
 
+
+#define LARGO 523
+#define ANCHO 600
+#define BLINK_TIMES 2
+
+static void map_portA (ALLEGRO_BITMAP *, ALLEGRO_BITMAP *);      //transfiere datos del portA al display que se muestra usando allegro. Recibe las imagenes
+static void Blink (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned char);                            //Hace parpadear los bit prendidos. Devuelve el seteo original
 /*
  * 
  */
-int main(int argc, char** argv) {
+int main(void) {
     
     ///////////////////////////////////////////////
     /*DECLARAMOS RECURSOS NECESARIOS DE ALLEGRO*///
@@ -49,83 +59,83 @@ int main(int argc, char** argv) {
     /*INICIALIZAMOS ALLEGRO Y LOS RECURSOS NECESARIOS*///
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if (!al_init()){                                                                                                                        //
-        fprintf(stderr, "Unable to start allegro\n");       //realizo la inicializacion de allegro
-        return -1;
-    } else if (!al_init_image_addon()) {
-        fprintf(stderr, "Unable to start image addon \n");  //si hubo un error en la inicializacion imprimo el srderr
-        al_uninstall_system();
-        return -1;
-    } else if (!(display = al_create_display(LARGO, ANCHO))) {  //se controlan si hubi problemas en las
-        fprintf(stderr, "Unable to create display\n");          //distintas inicializaciones 
-        al_uninstall_system();
-        al_shutdown_image_addon();                              
-        return -1;
-    } else if (!(imagen = al_load_bitmap("background.png"))) { // se carga en un bitmap la imagen que usaremis de base
-        fprintf(stderr, "Unable to load background\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    } else if (!(bienvenida = al_load_bitmap("bienvenida.png"))) {    //se carga la imagen de bienvenida
-        fprintf(stderr, "Unable to load bienvenida\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    } else if (!(menu = al_load_bitmap("menu.png"))) {    //se carga la imagen del menu
-        fprintf(stderr, "Unable to load menu\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }else if (!(led_high = al_load_bitmap("led_high.png"))) {           //se carga imagen de led prendido
-        fprintf(stderr, "Unable to load led\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }
-    else if (!(led_low = al_load_bitmap("led_low.png"))) {           //se carga imagen de led apagado
-        fprintf(stderr, "Unable to load led_low\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }
-    if (!al_install_audio()) {                                      //Inicializo el audio
-        fprintf(stderr, "failed to initialize audio!\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }
-
-    if (!al_init_acodec_addon()) {
-        fprintf(stderr, "failed to initialize audio codecs!\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }
-
-    if (!al_reserve_samples(1)) {
-        fprintf(stderr, "failed to reserve samples!\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }
-
-    music = al_load_sample("kun.wap");
-
-    if (!music) {
-        printf("Audio clip sample not loaded!\n");
-        al_uninstall_system();
-        al_shutdown_image_addon();
-        al_destroy_display(display);
-        return -1;
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        fprintf(stderr, "Unable to start allegro\n");       //realizo la inicializacion de allegro                                          //
+        return -1;                                                                                                                          //
+    } else if (!al_init_image_addon()) {                                                                                                    //
+        fprintf(stderr, "Unable to start image addon \n");  //si hubo un error en la inicializacion imprimo el srderr                       //
+        al_uninstall_system();                                                                                                              //
+        return -1;                                                                                                                          //
+    } else if (!(display = al_create_display(LARGO, ANCHO))) {  //se controlan si hubi problemas en las                                     //
+        fprintf(stderr, "Unable to create display\n");          //distintas inicializaciones                                                //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        return -1;                                                                                                                          //
+    } else if (!(imagen = al_load_bitmap("background.png"))) { // se carga en un bitmap la imagen que usaremis de base                      //
+        fprintf(stderr, "Unable to load background\n");                                                                                     //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    } else if (!(bienvenida = al_load_bitmap("bienvenida.png"))) {    //se carga la imagen de bienvenida                                    //
+        fprintf(stderr, "Unable to load bienvenida\n");                                                                                     //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    } else if (!(menu = al_load_bitmap("menu.png"))) {    //se carga la imagen del menu                                                     //
+        fprintf(stderr, "Unable to load menu\n");                                                                                           //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }else if (!(led_high = al_load_bitmap("led_high.png"))) {           //se carga imagen de led prendido                                   //
+        fprintf(stderr, "Unable to load led\n");                                                                                            //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }                                                                                                                                       //
+    else if (!(led_low = al_load_bitmap("led_low.png"))) {           //se carga imagen de led apagado                                       //
+        fprintf(stderr, "Unable to load led_low\n");                                                                                        //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }                                                                                                                                       //
+    if (!al_install_audio()) {                                      //Inicializo el audio                                                   //
+        fprintf(stderr, "failed to initialize audio!\n");                                                                                   //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }                                                                                                                                       //
+                                                                                                                                            //
+    if (!al_init_acodec_addon()) {                                                                                                          //
+        fprintf(stderr, "failed to initialize audio codecs!\n");                                                                            //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }                                                                                                                                       //
+                                                                                                                                            //
+    if (!al_reserve_samples(1)) {                                                                                                           //
+        fprintf(stderr, "failed to reserve samples!\n");                                                                                    //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }                                                                                                                                       //
+                                                                                                                                            //
+    music = al_load_sample("kun.wap");                                                                                                      //
+                                                                                                                                            //
+    if (!music) {                                                                                                                           //
+        printf("Audio clip sample not loaded!\n");                                                                                          //
+        al_uninstall_system();                                                                                                              //
+        al_shutdown_image_addon();                                                                                                          //
+        al_destroy_display(display);                                                                                                        //
+        return -1;                                                                                                                          //
+    }                                                                                                                                       //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     //////////////////////////////////
     /*INICIALIZO EVENTOS Y TECLADO*///
@@ -199,7 +209,7 @@ int main(int argc, char** argv) {
                 return 0;                                                                                                                                                //
             }                                                                                                                                                            //
             else if ((ev1.type == ALLEGRO_EVENT_KEY_DOWN) && (ev1.keyboard.keycode == ALLEGRO_KEY_ENTER)){      //sino tranqui, salgo del while sin problema             //
-                enter = TRUE;                                                                                                                                            //
+                mientras = TRUE;                                                                                                                                            //
             }                                                                                                                                                            //
         }                                                                                                                                                                //
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,63 +258,63 @@ int main(int argc, char** argv) {
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_T){         //Si se apreto la 't'
                         sw('t');                                            //Como siempre se le pasan datos validos y verificados a las funciones,
-                        map_portA(led_high, led_low);                       //Actualizo la imagen
+                        map_portA(led_high, led_low,0);                       //Actualizo la imagen
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_C){         //Si se apreto la 'c'
                         sw('c');
-                        map_portA(led_high, led_low); 
+                        map_portA(led_high, led_low,0); 
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_S){         //Si se apreto la 's'
                         sw('s');  
-                        map_portA(led_high, led_low); 
+                        map_portA(led_high, led_low,0); 
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_B){         //Si se apreto la 'b'
                         printf("La funcion Blink terminara luego de algunos destellos.\n");
-                        p.portD.W=Blink(led_high, led_low);
-                        map_portA(led_high, led_low);
+                        Blink(led_high, led_low);
+                        map_portA(led_high, led_low,0);
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_0){             //si se apreto el 0
                         sw('0');                                              //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                        //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                        //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_1){         //si se apreto el 1
                         sw('1');                                            //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                       //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                       //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_2){            //si se apreto el 2
                         sw('2');                                             //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                       //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                       //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_3){         //si se apreto el 3
                         sw('3');                                            //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                       //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                       //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_4){          //si se apreto el 4
                         sw('4');                                             //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                        //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                        //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_5){         //si se apreto el 5
                         sw('5');                                             //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                        //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                        //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_6){         //si se apreto el 6
                         sw('6');                                            //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                       //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                       //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                     else if (ev.keyboard.keycode == ALLEGRO_KEY_7){         //si se apreto el 7
                         sw('7');                                            //Seteo el numero de bit pedido
-                        map_portA(led_high, led_low);                       //Cambio el estado de los LEDS (grafico)
+                        map_portA(led_high, led_low,0);                       //Cambio el estado de los LEDS (grafico)
                         got_input = TRUE;                                   //Recibimos entrada
                     }
                 }
@@ -312,7 +322,7 @@ int main(int argc, char** argv) {
         }
 	printf("\n");
 	if (end != TRUE){		//Si el usuario no decidio salir
-            print_portA();		//Imprimo los cambios del puerto
+            print_portA(r_portA());		//Imprimo los cambios del puerto
         }
     }
     al_destroy_bitmap(imagen);       //se libera la memoria dinamica
@@ -329,5 +339,100 @@ int main(int argc, char** argv) {
 
 }
  
-   
+ /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+static void Blink(ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low){         //devuelve la configuracioin inicial de los bits       //
+    unsigned char port_temp= r_portA();                     //salva la configuracion inicial                                    //
+    int fin;                                                                                                                    //
+    for(fin=0;fin<=(BLINK_TIMES+1);fin++){                                                                                      //
+        print_portA(0);                                     //lo imprimo                                                        //
+        map_portA(led_high, led_low, port_temp);                      //lo imprimo en bitmap                                    //
+        sleep(1);                                          //delay                                                              //
+                                                                                                                                //
+    }                                                                                                                           //
+    printf ("Blink finalizado\n");                         //indico que termino el blink                                        //
+    return;                                                                                                                     //
+}                                                                                                                               //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static void map_portA (ALLEGRO_BITMAP *led, ALLEGRO_BITMAP *led_low, unsigned char a){        
+       if (a==0){                                
+                if(p.puertAB.PortA.bits.b7==1)            
+                {
+                        al_draw_bitmap(led_high,378,56,0);       //se carga una imagen de un led encendido
+                }
+                else
+                {
+                        al_draw_bitmap(led_low,378,56,0);      //se carga una imagen de un led apagado
+                }    
+                if(p.puertAB.PortA.bits.b6==1)
+                {
+                        al_draw_bitmap(led_high,473,56,0);
+                }
+                else
+                {
+                        al_draw_bitmap(led_low,473,56,0);
+                }    
+                if(p.puertAB.PortA.bits.b5==1)
+                {
+                        al_draw_bitmap(led_high ,568,56,0);
+                }
+                else
+                {
+                        al_draw_bitmap(led_low,568,56,0);
+                }    
+                if(p.puertAB.PortA.bits.b4==1)
+                {
+                        al_draw_bitmap(led_high ,664,56,0);
+                }
+                else
+                {
+                        al_draw_bitmap(led_low,664,56,0);
+                }    
+                if(p.puertAB.PortA.bits.b3==1)
+                {
+                        al_draw_bitmap(led_high ,759,56,0);
+                }
+                else
+                {
+                        al_draw_bitmap(led_low,759,56,0);
+                }    
+                if(p.puertAB.PortA.bits.b2==1)
+                {
+                        al_draw_bitmap(led_high ,855,56,0);
+                }   
+                else
+                {
+                        al_draw_bitmap(led_low,855,56,0);
+                }    
+                if(p.puertAB.PortA.bits.b1==1)
+                {
+
+                        al_draw_bitmap(led_high ,950,56,0);
+                }
+                else
+                {
+                        al_draw_bitmap(led_low,950,56,0);
+                }    
+                if(p.puertAB.PortA.bits.b0==1)
+                {
+                        al_draw_bitmap(led_high ,1034,56,0);
+                }
+                else                                
+                {
+                        al_draw_bitmap(led_low,1034,56,0);
+                }    
+                al_flip_display();
+                //al_rest(2.0);
+        }
+        else{
+            al_draw_bitmap(led_low,378,56,0);      //se carga una imagen de todos los leds apagados
+            al_draw_bitmap(led_low,473,56,0);
+            al_draw_bitmap(led_low,568,56,0);
+            al_draw_bitmap(led_low,664,56,0);
+            al_draw_bitmap(led_low,759,56,0);
+            al_draw_bitmap(led_low,855,56,0);
+            al_draw_bitmap(led_low,950,56,0);
+            al_draw_bitmap(led_low,1034,56,0);
+             
+        }
+}
