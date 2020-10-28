@@ -33,6 +33,122 @@ void bienvenida();                      //funcion que le da la bienvenida al usu
  */
 int main(int argc, char** argv) {
     
+    /*DECLARAMOS RECURSOS NECESARIOS DE ALLEGRO*/
+    
+    ALLEGRO_DISPLAY *display;                       //se crean  puntero hacia estrucuras de allegro,
+    ALLEGRO_BITMAP *imagen;                         
+    ALLEGRO_BITMAP *bienvenida;                   //Bienvenida
+    ALLEGRO_BITMAP *menu;                           //Instrucciones
+    ALLEGRO_BITMAP *led;                            //LED prendido
+    ALLEGRO_BITMAP *led_low;                        //LED apagado
+    ALLEGRO_SAMPLE *music = NULL;                  //Musica
+    ALLEGRO_EVENT_QUEUE *event_queue = NULL;        //Cola de eventos
+    
+    /*INICIALIZAMOS ALLEGRO Y LOS RECURSOS NECESARIOS*/
+    
+    if (!al_init()){
+        fprintf(stderr, "Unable to start allegro\n");       //realizo la inicializacion de allegro
+        return -1;
+    } else if (!al_init_image_addon()) {
+        fprintf(stderr, "Unable to start image addon \n");  //si hubo un error en la inicializacion imprimo el srderr
+        al_uninstall_system();
+        return -1;
+    } else if (!(display = al_create_display(LARGO, ANCHO))) {  //se controlan si hubi problemas en las
+        fprintf(stderr, "Unable to create display\n");          //distintas inicializaciones 
+        al_uninstall_system();
+        al_shutdown_image_addon();                              
+        return -1;
+    } else if (!(imagen = al_load_bitmap("background.png"))) { // se carga en un bitmap la imagen que usaremis de base
+        fprintf(stderr, "Unable to load background\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    } else if (!(bienvenida = al_load_bitmap("bienvenida.png"))) {    //se carga la imagen de bienvenida
+        fprintf(stderr, "Unable to load bienvenida\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    } else if (!(menu = al_load_bitmap("menu.png"))) {    //se carga la imagen del menu
+        fprintf(stderr, "Unable to load menu\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }else if (!(led = al_load_bitmap("led_high.png"))) {           //se carga imagen de led prendido
+        fprintf(stderr, "Unable to load led\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }
+    else if (!(led_low = al_load_bitmap("led_low.png"))) {           //se carga imagen de led apagado
+        fprintf(stderr, "Unable to load led_low\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }
+    if (!al_install_audio()) {                                      //Inicializo el audio
+        fprintf(stderr, "failed to initialize audio!\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }
+
+    if (!al_init_acodec_addon()) {
+        fprintf(stderr, "failed to initialize audio codecs!\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }
+
+    if (!al_reserve_samples(1)) {
+        fprintf(stderr, "failed to reserve samples!\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }
+
+    music = al_load_sample("kun.wap");
+
+    if (!music) {
+        printf("Audio clip sample not loaded!\n");
+        al_uninstall_system();
+        al_shutdown_image_addon();
+        al_destroy_display(display);
+        return -1;
+    }
+    
+    
+    
+    /*INICIALIZO EVENTOS Y TECLADO*/
+    
+    event_queue = al_create_event_queue();
+    if (!event_queue) {
+        fprintf(stderr, "failed to create event_queue!\n");
+        al_destroy_bitmap(imagen);       //se libera la memoria dinamica 
+        al_destroy_bitmap(led);
+        al_destroy_bitmap(led_low);
+        al_destroy_bitmap(bienvenida);
+        al_destroy_bitmap(menu);
+        al_uninstall_audio();
+        al_destroy_sample(music);
+        return -1;
+    }
+    if (!al_install_keyboard()) {
+        fprintf(stderr, "failed to initialize the keyboard!\n");
+        return -1;
+    }
+    al_register_event_source(event_queue, al_get_keyboard_event_source());       //Evento teclado
+    al_register_event_source(event_queue, al_get_display_event_source(display)); //Cruz roja de salir
+    
+    
+    
         porst_t port;
     
 	int mientras=1;							//inicializo variable que utilizo para un while
