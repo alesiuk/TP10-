@@ -29,7 +29,7 @@ FUNCIONES
 #include <stdint.h>
 
 #define ASCII 48
-#define BOOLEAN int
+
 #define TRUE 1
 #define	FALSE 0
 

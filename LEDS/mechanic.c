@@ -79,5 +79,78 @@ void bienvenida ()					//funcion que le da la bienvenida al usuario
     printf(" Para cambiar todos los LEDs al estado opuesto presione la tecla 't'.\n");
     printf(" Para apagar todos los leds presione la tecla 'c'.\n");
     printf(" Para prender todos los leds presione la tecla 's'.\n");
+    printf ("Para hacer titilar los leds presione la tecla 'b'. Para pararlos volver a tocar la tecla 'b'.\n");
     printf(" Para finalizar el programa presione la tecla 'q'.\n");
+}
+
+
+void map_portA (ALLEGRO_BITMAP *led_high, ALLEGRO_BITMAP *led_low)           
+{                                       
+	if(p.puertAB.PortA.bits.b7==1)            
+	{
+		al_draw_bitmap(led_high,378,56,0);       //se carga una imagen de un led encendido
+	}
+        else
+        {
+                al_draw_bitmap(led_low,378,56,0);      //se carga una imagen de un led apagado
+        }    
+	if(p.puertAB.PortA.bits.b6==1)
+	{
+		al_draw_bitmap(led_high,473,56,0);
+	}
+        else
+        {
+                al_draw_bitmap(led_low,473,56,0);
+        }    
+	if(p.puertAB.PortA.bits.b5==1)
+	{
+		al_draw_bitmap(led_high ,568,56,0);
+	}
+        else
+        {
+                al_draw_bitmap(led_low,568,56,0);
+        }    
+	if(p.puertAB.PortA.bits.b4==1)
+	{
+		al_draw_bitmap(led_high ,664,56,0);
+	}
+        else
+        {
+                al_draw_bitmap(led_low,664,56,0);
+        }    
+	if(p.puertAB.PortA.bits.b3==1)
+	{
+		al_draw_bitmap(led_high ,759,56,0);
+	}
+        else
+        {
+                al_draw_bitmap(led_low,759,56,0);
+        }    
+	if(p.puertAB.PortA.bits.b2==1)
+	{
+		al_draw_bitmap(led_high ,855,56,0);
+	}   
+        else
+        {
+                al_draw_bitmap(led_low,855,56,0);
+        }    
+	if(p.puertAB.PortA.bits.b1==1)
+	{
+            
+		al_draw_bitmap(led_high ,950,56,0);
+	}
+        else
+        {
+                al_draw_bitmap(led_low,950,56,0);
+        }    
+	if(p.puertAB.PortA.bits.b0==1)
+	{
+		al_draw_bitmap(led_high ,1034,56,0);
+	}
+        else                                
+        {
+                al_draw_bitmap(led_low,1034,56,0);
+        }    
+        al_flip_display();
+        //al_rest(2.0);
 }
