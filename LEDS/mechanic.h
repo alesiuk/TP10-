@@ -29,7 +29,9 @@ FUNCIONES
 #include <stdint.h>
 
 #define ASCII 48
-
+#define BOOLEAN int
+#define TRUE 1
+#define	FALSE 0
 
 void print_portA(unsigned int);			//funcion que imprime el estado del puerto A. No devuelve nada, resive el valor del puerto A
 

@@ -199,7 +199,11 @@ int main(int argc, char** argv) {
     }
     
     
+    /*PROTOBOARD CON LOS LEDS*/
     
+    al_draw_scaled_bitmap(imagen,0, 0, al_get_bitmap_width(imagen), al_get_bitmap_height(imagen),0, 0, LARGO, ANCHO,0);
+    al_flip_display();          //se muestra los led en estado inicial. Apagados
+    al_rest(2.0);               //Esperamos un poco
     
     
     
